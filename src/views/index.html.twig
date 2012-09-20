@@ -1,0 +1,24 @@
+{% extends 'layout.html.twig' %}
+
+{% block content %}
+    <table class="table table-bordered table-hover table-condensed">
+        <thead>
+            <tr>
+                <th>Database</th>
+                <th>Collections</th>
+                <th>Profiling</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for database, collections in databaseCollections|ksort %}
+                <tr>
+                    <td><a href="{{ path('database_profiles', { 'database': database }) }}">{{ database }}</a></td>
+                    <td>{{ render(path('database_collections', { 'database': database })) }}</td>
+                    <td>{{ render(path('database_profiling', { 'database': database })) }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="http://github.com/jmikola/mongoqp"><img style="position: absolute; top: 0; right: 0; border: 0;" src="//s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'layout.html.twig' %}
+
+{% block content %}
+    <ul class="breadcrumb">
+        <li><a href="{{ path('index') }}">localhost</a> <span class="divider">/</span></li>
+        <li class="active">{{ database }} <span class="divider">/</span></li>
+        <li><form class="collection-selector"><input type="text" data-provide="typeahead" data-source="{{ collections|json_encode }}"></form></li>
+    </ul>
+
+    {% include '_profiles.html.twig' %}
+
+    {% if collections %}
+        <h5>Collections <span class="badge">{{ collections|length }}</span></h5>
+
+        {{ render(path('database_collections', { 'database': database })) }}
+    {% endif %}
+{% endblock %}

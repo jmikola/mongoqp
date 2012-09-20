@@ -1,0 +1,33 @@
+<?php
+
+namespace MongoQP\Silex\Provider;
+
+use Silex\Application;
+use Silex\ServiceProviderInterface;
+use MongoQP\QueryProfiler;
+
+class QueryProfilerServiceProvider implements ServiceProviderInterface
+{
+    public function register(Application $app)
+    {
+        $app['mongo'] = $app->share(function() {
+            return new \Mongo();
+        });
+
+        $app['query.profiler'] = $app->share(function () use ($app) {
+            $jsDir = __DIR__.'/../../../js';
+            $code = [
+                'clean'    => new \MongoCode(file_get_contents($jsDir.'/clean.js')),
+                'map'      => new \MongoCode(file_get_contents($jsDir.'/map.js')),
+                'reduce'   => new \MongoCode(file_get_contents($jsDir.'/reduce.js')),
+                'finalize' => new \MongoCode(file_get_contents($jsDir.'/finalize.js')),
+            ];
+
+            return new QueryProfiler($app['mongo'], $code);
+        });
+    }
+
+    public function boot(Application $app)
+    {
+    }
+}

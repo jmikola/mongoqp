@@ -1,0 +1,7 @@
+<form class="profiling-control" action="{{ path('database_profiling_set', { 'database': database }) }}">
+    <div class="btn-group" data-toggle="buttons-radio">
+        <button type="button" data-level="0" class="btn{{ 0 == level ? ' active' : '' }}">Off</button>
+        <button type="button" data-level="1" class="btn{{ 1 == level ? ' active' : '' }}">Slow</button>
+        <button type="button" data-level="2" class="btn{{ 2 == level ? ' active' : '' }}">All</button>
+    </div>
+</form>

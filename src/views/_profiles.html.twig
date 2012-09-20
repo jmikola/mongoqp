@@ -1,0 +1,50 @@
+<table class="table table-bordered table-hover table-condensed profiles">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Query</th>
+            <th>Time (ms)</th>
+            <th># Returned</th>
+            <th># Scanned</th>
+            <th>Response (bytes)</th>
+            <th>Last Occurrence</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for profile in profiles %}
+            <tr>
+                <td>{{ profile.count }}</td>
+                <td>
+                    <p><strong>{{ profile.op }}</strong> on <code>{{ profile.ns }}</code></p>
+                    <pre><code>{{ profile.query|json_encode_pretty(2) }}</code></pre>
+                </td>
+                {% for field in ["millis", "nreturned", "nscanned", "responseLength"] %}
+                    <td>
+                        {% if profile[field].min == profile[field].max %}
+                            {{ profile[field].avg|number_format(0) }}
+                        {% else %}
+                            <a href="#" rel="tooltip" data-title="[&lt;strong&gt;{{ profile[field].min|number_format(0) }}&lt;/strong&gt; &ndash; &lt;strong&gt;{{ profile[field].max|number_format(0) }}&lt;/strong&gt;]">
+                                {{ profile[field].avg|number_format(0) }}
+                            </a>
+                        {% endif %}
+                    </td>
+                {% endfor %}
+                <td>
+                    {% if profile.ts.min == profile.ts.max %}
+                        {{ profile.ts.max|date }}
+                    {% else %}
+                        <a href="#" rel="tooltip" data-title="Since: &lt;strong&gt;{{ profile.ts.min|date }}&lt;/strong&gt;">{{ profile.ts.max|date }}</a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7" class="muted">empty</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<div class="alert alert-info">
+    <button type="button" class="close" data-dismiss="alert">×</button>
+    Averages shown by default (lower/upper bounds are available in tooltips).
+</div>

@@ -1,0 +1,11 @@
+{% extends 'layout.html.twig' %}
+
+{% block content %}
+    <ul class="breadcrumb">
+        <li><a href="{{ path('index') }}">localhost</a> <span class="divider">/</span></li>
+        <li><a href="{{ path('database_profiles', { 'database': database }) }}">{{ database }}</a> <span class="divider">/</span></li>
+        <li class="active">{{ collection }}</li>
+    </ul>
+
+    {% include '_profiles.html.twig' %}
+{% endblock %}

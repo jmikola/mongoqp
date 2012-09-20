@@ -1,0 +1,5 @@
+{% for collection in collections|sort %}
+    <a href="{{ path('collection_profiles', { 'database': database, 'collection': collection }) }}">{{ collection }}</a>
+{% else %}
+    <span class="muted">empty</span>
+{% endfor %}
