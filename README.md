@@ -1,14 +1,23 @@
 mongoqp
 =======
 
-**mongoqp** is a frontend for MongoDB's query profiler collections (i.e. `db.system.profile`), built using [Silex][1].
+**mongoqp** is a frontend for MongoDB's [query profiler][1] collections (i.e.
+`db.system.profile`), built using [Silex][2].
 
 It currently supports:
 
  * Toggling query profiler levels (off, slow, all) per database
  * Grouping similar queries by BSON structure
  * Reporting aggregate query statistics (min, max, average, times)
- * Sorting, pagination and filtering via [DataTables][2]
+ * Sorting, pagination and filtering via [DataTables][3]
+
+Future plans:
+
+ * Control over slow query thresholds
+ * Improving analytics
+ * Persistent data collection
+ * Integration with Justin Hileman's [Genghis][4] (single-file MongoDB admin)
+ * Integration with Tyler Brock's [mongo-hacker][5] (MongoDB shell enhancements)
 
 ### Screenshots
 
@@ -35,8 +44,11 @@ your web server.
 ### Web Server
 
 Instructions for web server configurations are outlined in the
-[Silex documentation][3].
+[Silex documentation][6].
 
-  [1]: http://silex.sensiolabs.org/
-  [2]: http://datatables.net/
-  [3]: http://silex.sensiolabs.org/doc/web_servers.html
+  [1]: http://www.mongodb.org/display/DOCS/Database+Profiler
+  [2]: http://silex.sensiolabs.org/
+  [3]: http://datatables.net/
+  [4]: https://github.com/bobthecow/genghis
+  [5]: https://github.com/TylerBrock/mongo-hacker
+  [6]: http://silex.sensiolabs.org/doc/web_servers.html
