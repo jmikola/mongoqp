@@ -2,7 +2,7 @@ mongoqp
 =======
 
 **mongoqp** is a frontend for MongoDB's [query profiler][1] collections (i.e.
-`db.system.profile`), built using [Silex][2].
+`db.system.profile`), built using [Silex][2] and PHP 5.4.
 
 It currently supports:
 
@@ -29,6 +29,8 @@ Future plans:
 
 ### Install Dependencies
 
+Dependencies are managed with [Composer][6], a PHP package manager.
+
     $ composer.phar install
 
 ### Configuration
@@ -44,11 +46,12 @@ your web server.
 ### Web Server
 
 Instructions for web server configurations are outlined in the
-[Silex documentation][6].
+[Silex documentation][7].
 
   [1]: http://www.mongodb.org/display/DOCS/Database+Profiler
   [2]: http://silex.sensiolabs.org/
   [3]: http://datatables.net/
   [4]: https://github.com/bobthecow/genghis
   [5]: https://github.com/TylerBrock/mongo-hacker
-  [6]: http://silex.sensiolabs.org/doc/web_servers.html
+  [6]: http://getcomposer.org/
+  [7]: http://silex.sensiolabs.org/doc/web_servers.html
