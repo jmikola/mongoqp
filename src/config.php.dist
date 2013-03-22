@@ -1,3 +1,4 @@
 <?php
 
-$app['twig.cache_dir'] = __DIR__.'/../cache';
+$app['debug'] = false;
+$app['twig.cache_dir'] = sys_get_temp_dir() . '/mongoqp-cache';

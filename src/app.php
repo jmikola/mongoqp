@@ -11,7 +11,9 @@ $loader = require_once __DIR__.'/../vendor/autoload.php';
 
 $app = new Application();
 
-require_once __DIR__.'/config.php';
+require_once is_file(__DIR__.'/config.php')
+    ? __DIR__.'/config.php'
+    : __DIR__.'/config.php.dist';
 
 $app->register(new QueryProfilerServiceProvider());
 $app->register(new UrlGeneratorServiceProvider());
