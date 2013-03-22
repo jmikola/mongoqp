@@ -45,7 +45,11 @@ your web server.
 
 ### Web Server
 
-Instructions for web server configurations are outlined in the
+The application can be started using:
+
+    $ php -S localhost:8080 -t web web/index.php
+
+Instructions for other web server configurations are outlined in the
 [Silex documentation][7].
 
   [1]: http://www.mongodb.org/display/DOCS/Database+Profiler
