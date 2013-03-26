@@ -10,6 +10,10 @@
     letter-spacing: 0;
 }
 
+.page-header .connection {
+    text-align: right;
+}
+
 form.profiling-control {
     margin: 0;
     white-space: nowrap;

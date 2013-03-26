@@ -12,7 +12,10 @@
 <body>
     <div class="container">
         <div class="page-header">
-            <h1>mongoqp: <small>a query profile viewer</small></h1>
+            <div class="row-fluid">
+                <div class="span6"><h1>mongoqp: <small>a query profile viewer</small></h1></div>
+                <div class="span6 connection"><i class="icon-leaf"></i> {{ app.mongo }}</div>
+            </div>
         </div>
         {% block content '' %}
     </div>
