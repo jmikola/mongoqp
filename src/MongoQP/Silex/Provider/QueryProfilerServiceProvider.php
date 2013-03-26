@@ -10,9 +10,9 @@ class QueryProfilerServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
     {
-        $app['mongo'] = $app->share(function() {
-            return new \MongoClient();
-        });
+        if (!isset($app['mongo'])) {
+            $app['mongo'] = $app->share(function() { return new \MongoClient(); });
+        }
 
         $app['query.profiler'] = $app->share(function () use ($app) {
             $jsDir = __DIR__.'/../../../js';

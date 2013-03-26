@@ -44,7 +44,23 @@ Currently, the following options are available:
  * `debug`: Enable verbose error reporting
  * `twig.cache_dir`: Cache directory for Twig templates
 
-### Cache Directory
+#### Database Connection
+
+By default, the application will connect to a standalone MongoDB server on the
+local host (i.e. `new MongoClient()`). The connection may be customized by
+defining a shared `mongo` service in `config.php`:
+
+```php
+$app['mongo'] = $app->share(function() {
+    return new \MongoClient('mongodb://example.com:27017');
+});
+```
+
+The above example connects to a standalone server by its hostname. Consult the
+driver's [connection documentation][7] for additional examples on connecting to
+a replica set or shard cluster.
+
+#### Cache Directory
 
 By default, the application will use `mongoqp-cache/` within the system's
 temporary directory. This path, which must be writable, may be customized via
@@ -57,7 +73,7 @@ The application can be started using:
     $ php -S localhost:8080 -t web web/index.php
 
 Instructions for other web server configurations are outlined in the
-[Silex documentation][7].
+[Silex documentation][8].
 
   [1]: http://www.mongodb.org/display/DOCS/Database+Profiler
   [2]: http://silex.sensiolabs.org/
@@ -65,4 +81,5 @@ Instructions for other web server configurations are outlined in the
   [4]: https://github.com/bobthecow/genghis
   [5]: https://github.com/TylerBrock/mongo-hacker
   [6]: http://getcomposer.org/
-  [7]: http://silex.sensiolabs.org/doc/web_servers.html
+  [7]: http://php.net/manual/en/mongo.connecting.php
+  [8]: http://silex.sensiolabs.org/doc/web_servers.html
