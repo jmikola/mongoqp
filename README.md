@@ -27,11 +27,12 @@ Future plans:
 
 ## Setup
 
-### Install Dependencies
+### Installation
 
-Dependencies are managed with [Composer][6], a PHP package manager.
+Dependencies are managed with [Composer][6], a PHP package manager. This project
+is also published as a package, which means it can be installed with:
 
-    $ composer.phar install
+    $ composer.phar create-project jmikola/mongoqp
 
 ### Configuration
 
