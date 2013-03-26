@@ -35,11 +35,11 @@ jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         x = (x == "-") ? 0 : x.replace( /,/, "" );
         return parseFloat( x );
     },
- 
+
     "numeric-comma-html-asc": function ( a, b ) {
         return ((a < b) ? -1 : ((a > b) ? 1 : 0));
     },
- 
+
     "numeric-comma-html-desc": function ( a, b ) {
         return ((a < b) ? 1 : ((a > b) ? -1 : 0));
     }
