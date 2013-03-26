@@ -4,14 +4,11 @@ namespace MongoQP;
 
 class QueryProfiler
 {
-    // TODO: Remove this after MongoDB::getConnectionNames() is implemented
-    const NS_ERROR = 'ns doesn\'t exist';
-
     private $mongo;
     private $code;
     private $timezone;
 
-    public function __construct(\Mongo $mongo, array $code)
+    public function __construct(\MongoClient $mongo, array $code)
     {
         $this->mongo = $mongo;
         $this->code = $code;
@@ -28,10 +25,7 @@ class QueryProfiler
 
     public function getCollections($database)
     {
-        return array_map(
-            function($collection) { return $collection->getName(); },
-            $this->mongo->selectDB($database)->listCollections()
-        );
+        return $this->mongo->selectDB($database)->getCollectionNames();
     }
 
     public function getProfilingLevel($database)
@@ -65,6 +59,10 @@ class QueryProfiler
 
     private function getProfiles(\MongoDB $mongodb, array $options = array())
     {
+        if (!in_array('system.profile', $mongodb->getCollectionNames(true))) {
+            return array();
+        }
+
         $rs = $mongodb->command([
             'mapreduce' => 'system.profile',
             'map' => $this->code['map'],
@@ -76,10 +74,6 @@ class QueryProfiler
         ] + $options);
 
         if (!$rs['ok']) {
-            if (isset($rs['errmsg']) && self::NS_ERROR === $rs['errmsg']) {
-                return array();
-            }
-
             throw new QueryProfilerException(
                 isset($rs['errmsg']) ? $rs['errmsg'] : 'MapReduce error',
                 isset($rs['code']) ? $rs['code'] : 0

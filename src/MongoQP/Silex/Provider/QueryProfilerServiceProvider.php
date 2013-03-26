@@ -11,7 +11,7 @@ class QueryProfilerServiceProvider implements ServiceProviderInterface
     public function register(Application $app)
     {
         $app['mongo'] = $app->share(function() {
-            return new \Mongo();
+            return new \MongoClient();
         });
 
         $app['query.profiler'] = $app->share(function () use ($app) {
