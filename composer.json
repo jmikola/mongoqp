@@ -1,4 +1,13 @@
 {
+    "name": "jmikola/mongoqp",
+    "type": "silex-application",
+    "description": "MongoQP is a frontend for MongoDB's query profiler collection.",
+    "keywords": ["mongodb", "database", "profiling"],
+    "homepage": "https://github.com/jmikola/mongoqp",
+    "license": "MIT",
+    "authors": [
+        { "name": "Jeremy Mikola", "email": "jmikola@gmail.com" }
+    ],
     "require": {
         "php": ">=5.4.0",
         "ext-mongo": "~1.3",
