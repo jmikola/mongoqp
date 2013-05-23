@@ -76,7 +76,7 @@ The application can be started using:
 Instructions for other web server configurations are outlined in the
 [Silex documentation][8].
 
-  [1]: http://www.mongodb.org/display/DOCS/Database+Profiler
+  [1]: http://docs.mongodb.org/manual/tutorial/manage-the-database-profiler/
   [2]: http://silex.sensiolabs.org/
   [3]: http://datatables.net/
   [4]: https://github.com/bobthecow/genghis
