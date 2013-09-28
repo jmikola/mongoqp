@@ -74,7 +74,7 @@ class QueryProfiler
         ] + $options);
 
         if (!$rs['ok']) {
-            throw new QueryProfilerException(
+            throw new \RuntimeException(
                 isset($rs['errmsg']) ? $rs['errmsg'] : 'MapReduce error',
                 isset($rs['code']) ? $rs['code'] : 0
             );
