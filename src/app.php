@@ -30,9 +30,6 @@ $app['twig'] = $app->share($app->extend('twig', function($twig, $app) {
     return $twig;
 }));
 
-$app['twig']->getExtension('core')->setDateFormat('Y-m-d H:i:s O');
-$app['twig']->getExtension('core')->setTimezone('America/New_York');//ini_get('date.timezone'));
-
 require_once __DIR__.'/controllers.php';
 
 return $app;

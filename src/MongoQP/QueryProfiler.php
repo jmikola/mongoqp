@@ -82,12 +82,8 @@ class QueryProfiler
 
         foreach ($rs['results'] as $i => $result) {
             $rs['results'][$i] = $result['_id'] + $result['value'];
-
             $rs['results'][$i]['ts']['min'] = new \DateTime('@' . $rs['results'][$i]['ts']['min']->sec);
             $rs['results'][$i]['ts']['max'] = new \DateTime('@' . $rs['results'][$i]['ts']['max']->sec);
-
-            //$rs['results'][$i]['ts']['min']->setTimezone($this->timezone);
-            //$rs['results'][$i]['ts']['max']->setTimezone($this->timezone);
         }
 
         return $rs['results'];
