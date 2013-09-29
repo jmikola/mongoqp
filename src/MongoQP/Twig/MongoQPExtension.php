@@ -35,6 +35,6 @@ class MongoQPExtension extends \Twig_Extension
 
     public function getName()
     {
-        return 'mongoqp_format';
+        return 'mongoqp';
     }
 }

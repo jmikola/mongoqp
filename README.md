@@ -1,23 +1,23 @@
 mongoqp
 =======
 
-**mongoqp** is a frontend for MongoDB's [query profiler][1] collections (i.e.
-`db.system.profile`), built using [Silex][2] and PHP 5.4.
+**mongoqp** is a frontend for MongoDB's [query profiler][] collections (i.e.
+`db.system.profile`), built using [Silex][] and PHP 5.4.
 
 It currently supports:
 
  * Toggling query profiler levels (off, slow, all) per database
  * Grouping similar queries by BSON structure
  * Reporting aggregate query statistics (min, max, average, times)
- * Sorting, pagination and filtering via [DataTables][3]
+ * Sorting, pagination and filtering via [DataTables][]
 
 Future plans:
 
  * Control over slow query thresholds
  * Improving analytics
  * Persistent data collection
- * Integration with Justin Hileman's [Genghis][4] (single-file MongoDB admin)
- * Integration with Tyler Brock's [mongo-hacker][5] (MongoDB shell enhancements)
+ * Integration with Justin Hileman's [Genghis][] (single-file MongoDB admin)
+ * Integration with Tyler Brock's [mongo-hacker][] (MongoDB shell enhancements)
 
 ### Screenshots
 
@@ -29,10 +29,12 @@ Future plans:
 
 ### Installation
 
-Dependencies are managed with [Composer][6], a PHP package manager. This project
+Dependencies are managed with [Composer][], a PHP package manager. This project
 is also published as a package, which means it can be installed with:
 
-    $ composer.phar create-project jmikola/mongoqp
+```
+$ composer create-project jmikola/mongoqp
+```
 
 ### Configuration
 
@@ -58,8 +60,12 @@ $app['mongo'] = $app->share(function() {
 ```
 
 The above example connects to a standalone server by its hostname. Consult the
-driver's [connection documentation][7] for additional examples on connecting to
-a replica set or shard cluster.
+PHP driver's [connection documentation][] for additional examples on connecting
+to a replica set or specifying auth credentials.
+
+Database profiling cannot be enabled on `mongos` instances. If you are profiling
+queries in a sharded cluster, the application should be configured to connect to
+an individual shard.
 
 #### Cache Directory
 
@@ -71,16 +77,18 @@ the `twig.cache_dir` configuration option.
 
 The application can be started using:
 
-    $ php -S localhost:8080 -t web web/index.php
+```
+$ php -S localhost:8080 -t web web/index.php
+```
 
 Instructions for other web server configurations are outlined in the
-[Silex documentation][8].
+[Silex documentation][].
 
-  [1]: http://docs.mongodb.org/manual/tutorial/manage-the-database-profiler/
-  [2]: http://silex.sensiolabs.org/
-  [3]: http://datatables.net/
-  [4]: https://github.com/bobthecow/genghis
-  [5]: https://github.com/TylerBrock/mongo-hacker
-  [6]: http://getcomposer.org/
-  [7]: http://php.net/manual/en/mongo.connecting.php
-  [8]: http://silex.sensiolabs.org/doc/web_servers.html
+  [query profiler]: http://docs.mongodb.org/manual/tutorial/manage-the-database-profiler/
+  [Silex]: http://silex.sensiolabs.org/
+  [DataTables]: http://datatables.net/
+  [Genghis]: https://github.com/bobthecow/genghis
+  [mongo-hacker]: https://github.com/TylerBrock/mongo-hacker
+  [Composer]: http://getcomposer.org/
+  [connection documentation]: http://php.net/manual/en/mongo.connecting.php
+  [Silex documentation]: http://silex.sensiolabs.org/doc/web_servers.html

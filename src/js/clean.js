@@ -1,11 +1,9 @@
 function(expr, typeIfNoOps) {
     typeIfNoOps = typeIfNoOps !== undefined ? typeIfNoOps : false;
     var hasOps = false;
-    var isOp = false;
 
     for (var key in expr) {
-        isOp = "$" === key.charAt(0);
-        hasOps |= isOp;
+        hasOps |= "$" === key.charAt(0);
 
         // Clean expressions within logical operators
         if ("$and" === key || "$nor" === key || "$or" === key) {

@@ -30,19 +30,6 @@ $app['twig'] = $app->share($app->extend('twig', function($twig, $app) {
     return $twig;
 }));
 
-$app->error(function (\Exception $e, $code) use ($app) {
-    if ($app['debug']) {
-        return;
-    }
-
-    $error = 404 == $code ? $e->getMessage() : null;
-
-    return new Response($app['twig']->render('error.html.twig', ['error' => $error]), $code);
-});
-
-$app['twig']->getExtension('core')->setDateFormat('Y-m-d H:i:s O');
-$app['twig']->getExtension('core')->setTimezone('America/New_York');//ini_get('date.timezone'));
-
 require_once __DIR__.'/controllers.php';
 
 return $app;
