@@ -2,7 +2,7 @@
     <thead>
         <tr>
             <th>#</th>
-            <th>Operation / Query</th>
+            <th>Operation / Query / Sort</th>
             <th>Time (ms)</th>
             <th># Returned</th>
             <th># Scanned</th>
@@ -17,6 +17,9 @@
                 <td>
                     <p><strong>{{ profile.op }}</strong> on <code>{{ profile.ns }}</code></p>
                     <pre><code>{{ profile.query|json_encode_pretty(2) }}</code></pre>
+                    {% if profile.sort is not empty %}
+                        <pre><code>{{ profile.sort|json_encode_pretty(2) }}</code></pre>
+                    {% endif %}
                 </td>
                 {% for field in ["millis", "nreturned", "nscanned", "responseLength"] %}
                     <td>
