@@ -17,10 +17,10 @@ class QueryProfilerServiceProvider implements ServiceProviderInterface
         $app['query.profiler'] = $app->share(function () use ($app) {
             $jsDir = __DIR__.'/../../../js';
             $code = [
-                'clean'    => new \MongoCode(file_get_contents($jsDir.'/clean.js')),
                 'map'      => new \MongoCode(file_get_contents($jsDir.'/map.js')),
                 'reduce'   => new \MongoCode(file_get_contents($jsDir.'/reduce.js')),
                 'finalize' => new \MongoCode(file_get_contents($jsDir.'/finalize.js')),
+                'skeleton' => new \MongoCode(file_get_contents($jsDir.'/skeleton.js')),
             ];
 
             return new QueryProfiler($app['mongo'], $code);

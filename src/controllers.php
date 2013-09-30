@@ -13,7 +13,7 @@ $app->get('/', function() use ($app) {
 })->bind('index');
 
 $app->get('/p/{database}', function($database) use ($app) {
-    $profiles = $app['query.profiler']->getDatabaseProfiles($database);
+    $profiles = $app['query.profiler']->getProfilingData($database);
     $collections = $app['query.profiler']->getCollections($database);
 
     return $app['twig']->render('database.html.twig', [
@@ -24,7 +24,7 @@ $app->get('/p/{database}', function($database) use ($app) {
 })->bind('database_profiles');
 
 $app->get('/p/{database}/{collection}', function($database, $collection) use ($app) {
-    $profiles = $app['query.profiler']->getCollectionProfiles($database, $collection);
+    $profiles = $app['query.profiler']->getProfilingData($database, $collection);
 
     return $app['twig']->render('collection.html.twig', [
         'database' => $database,

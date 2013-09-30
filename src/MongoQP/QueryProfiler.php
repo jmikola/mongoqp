@@ -30,38 +30,36 @@ class QueryProfiler
 
     public function getProfilingLevel($database)
     {
-        $mongodb = $this->mongo->selectDB($database);
-
-        return $mongodb->getProfilingLevel();
+        return $this->mongo->selectDB($database)->getProfilingLevel();
     }
 
     public function setProfilingLevel($database, $level)
     {
-        $mongodb = $this->mongo->selectDB($database);
-
-        $mongodb->setProfilingLevel((int) $level);
+        $this->mongo->selectDB($database)->setProfilingLevel((int) $level);
     }
 
-    public function getDatabaseProfiles($database)
+    public function getProfilingData($database, $collection = null)
     {
         $mongodb = $this->mongo->selectDB($database);
 
-        return $this->getProfiles($mongodb);
-    }
-
-    public function getCollectionProfiles($database, $collection)
-    {
-        $mongodb = $this->mongo->selectDB($database);
-        $options = ['query' => ['ns' => $database.'.'.$collection]];
-
-        return $this->getProfiles($mongodb, $options);
-    }
-
-    private function getProfiles(\MongoDB $mongodb, array $options = array())
-    {
-        if (!in_array('system.profile', $mongodb->getCollectionNames(true))) {
+        // Ensure the database has a "system.profile" collection
+        if ( ! in_array('system.profile', $mongodb->getCollectionNames(true))) {
             return array();
         }
+
+        /* Exclude system collection queries. Commands, which are queries on the
+         * special "$cmd" collection, should be allowed, but their collection
+         * may need to be matched during the map JavaScript function. For normal
+         * operations, the namespace may match an exact string or a regex of the
+         * database prefix.
+         */
+        $query = ['ns' => [
+            '$not' => new \MongoRegex('/^' . preg_quote("$database.system.") . '/'),
+            '$in' => [
+                "$database.\$cmd",
+                isset($collection) ? "$database.$collection" : new \MongoRegex('/^' . preg_quote("$database.") . '/'),
+            ],
+        ]];
 
         $rs = $mongodb->command([
             'mapreduce' => 'system.profile',
@@ -69,11 +67,16 @@ class QueryProfiler
             'reduce' => $this->code['reduce'],
             'finalize' => $this->code['finalize'],
             'out' => ['inline' => 1],
-            'scope' => ['clean' => $this->code['clean']],
+            'query' => $query,
+            'scope' => [
+                'database' => $database,
+                'collection' => $collection,
+                'skeleton' => $this->code['skeleton'],
+            ],
             'jsMode' => true,
-        ] + $options);
+        ]);
 
-        if (!$rs['ok']) {
+        if ( ! $rs['ok']) {
             throw new \RuntimeException(
                 isset($rs['errmsg']) ? $rs['errmsg'] : 'MapReduce error',
                 isset($rs['code']) ? $rs['code'] : 0
