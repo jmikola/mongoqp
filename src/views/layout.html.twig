@@ -14,7 +14,7 @@
         <div class="page-header">
             <div class="row-fluid">
                 <div class="span6"><h1>mongoqp: <small>a query profile viewer</small></h1></div>
-                <div class="span6 connection"><i class="icon-leaf"></i> {{ app.mongo }}</div>
+                <div class="span6 connection"><i class="icon-leaf"></i> {{ app["query.profiler"].primaryHostAndPort }}</div>
             </div>
         </div>
         {% block content '' %}
