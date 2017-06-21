@@ -21,7 +21,7 @@
                         <pre><code>{{ profile.sort|json_encode_pretty(2) }}</code></pre>
                     {% endif %}
                 </td>
-                {% for field in ["millis", "nreturned", "nscanned", "responseLength"] %}
+                {% for field in ["millis", "nreturned", "keysExamined", "responseLength"] %}
                     <td>
                         {% if profile[field].min == profile[field].max %}
                             {{ profile[field].avg|number_format(0) }}

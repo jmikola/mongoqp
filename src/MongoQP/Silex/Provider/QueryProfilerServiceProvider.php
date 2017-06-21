@@ -2,32 +2,33 @@
 
 namespace MongoQP\Silex\Provider;
 
-use Silex\Application;
-use Silex\ServiceProviderInterface;
+use MongoDB\Client;
 use MongoQP\QueryProfiler;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 
 class QueryProfilerServiceProvider implements ServiceProviderInterface
 {
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        if (!isset($app['mongo'])) {
-            $app['mongo'] = $app->share(function() { return new \MongoClient(); });
-        }
+        $app['mongodb.client'] = function() use ($app) {
+            return new Client(
+                $app['mongodb.client.uri'],
+                $app['mongodb.client.uriOptions'],
+                $app['mongodb.client.driverOptions']
+            );
+        };
 
-        $app['query.profiler'] = $app->share(function () use ($app) {
+        $app['query.profiler'] = function() use ($app) {
             $jsDir = __DIR__.'/../../../js';
             $code = [
-                'map'      => new \MongoCode(file_get_contents($jsDir.'/map.js')),
-                'reduce'   => new \MongoCode(file_get_contents($jsDir.'/reduce.js')),
-                'finalize' => new \MongoCode(file_get_contents($jsDir.'/finalize.js')),
-                'skeleton' => new \MongoCode(file_get_contents($jsDir.'/skeleton.js')),
+                'map'      => file_get_contents($jsDir.'/map.js'),
+                'reduce'   => file_get_contents($jsDir.'/reduce.js'),
+                'finalize' => file_get_contents($jsDir.'/finalize.js'),
+                'skeleton' => file_get_contents($jsDir.'/skeleton.js'),
             ];
 
-            return new QueryProfiler($app['mongo'], $code);
-        });
-    }
-
-    public function boot(Application $app)
-    {
+            return new QueryProfiler($app['mongodb.client'], $code);
+        };
     }
 }

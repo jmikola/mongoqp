@@ -2,49 +2,64 @@
 
 namespace MongoQP;
 
+use MongoDB\Client;
+use MongoDB\BSON\Javascript;
+use MongoDB\BSON\Regex;
+use MongoDB\Driver\ReadPreference;
+use MongoDB\Model\CollectionInfo;
+use MongoDB\Model\DatabaseInfo;
+
 class QueryProfiler
 {
-    private $mongo;
+    private $client;
     private $code;
-    private $timezone;
 
-    public function __construct(\MongoClient $mongo, array $code)
+    public function __construct(Client $client, array $code)
     {
-        $this->mongo = $mongo;
+        $this->client = $client;
         $this->code = $code;
-        $this->timezone = new \DateTimeZone(ini_get('date.timezone'));
+    }
+
+    public function getPrimaryHostAndPort()
+    {
+        $server = $this->client->getManager()->selectServer(new ReadPreference(ReadPreference::RP_PRIMARY));
+
+        return $server->getHost() . ':' . $server->getPort();
     }
 
     public function getDatabases()
     {
         return array_map(
-            function($database) { return $database['name']; },
-            $this->mongo->listDBs()['databases']
+            function(DatabaseInfo $databaseInfo) { return $databaseInfo->getName(); },
+            iterator_to_array($this->client->listDatabases())
         );
     }
 
     public function getCollections($database)
     {
-        return $this->mongo->selectDB($database)->getCollectionNames();
+        return array_map(
+            function(CollectionInfo $collectionInfo) { return $collectionInfo->getName(); },
+            iterator_to_array($this->client->selectDatabase($database)->listCollections())
+        );
     }
 
     public function getProfilingLevel($database)
     {
-        return $this->mongo->selectDB($database)->getProfilingLevel();
+        return $this->client->selectDatabase($database)->command(['profile' => -1])->toArray()[0]['was'];
     }
 
     public function setProfilingLevel($database, $level)
     {
-        $this->mongo->selectDB($database)->setProfilingLevel((int) $level);
+        $this->client->selectDatabase($database)->command(['profile' => (int) $level]);
     }
 
     public function getProfilingData($database, $collection = null)
     {
-        $mongodb = $this->mongo->selectDB($database);
+        $database = $this->client->selectDatabase($database);
 
         // Ensure the database has a "system.profile" collection
-        if ( ! in_array('system.profile', $mongodb->getCollectionNames(true))) {
-            return array();
+        if ( ! in_array('system.profile', $this->getCollections($database))) {
+            return [];
         }
 
         /* Exclude system collection queries. Commands, which are queries on the
@@ -54,27 +69,27 @@ class QueryProfiler
          * database prefix.
          */
         $query = ['ns' => [
-            '$not' => new \MongoRegex('/^' . preg_quote("$database.system.") . '/'),
+            '$not' => new Regex('^' . preg_quote("$database.system.")),
             '$in' => [
                 "$database.\$cmd",
                 isset($collection) ? "$database.$collection" : new \MongoRegex('/^' . preg_quote("$database.") . '/'),
             ],
         ]];
 
-        $rs = $mongodb->command([
+        $rs = $database->command([
             'mapreduce' => 'system.profile',
-            'map' => $this->code['map'],
-            'reduce' => $this->code['reduce'],
-            'finalize' => $this->code['finalize'],
+            'map' => new Javascript($this->code['map']),
+            'reduce' => new Javascript($this->code['reduce']),
+            'finalize' => new Javascript($this->code['finalize']),
             'out' => ['inline' => 1],
             'query' => $query,
             'scope' => [
                 'database' => $database,
                 'collection' => $collection,
-                'skeleton' => $this->code['skeleton'],
+                'skeleton' => new Javascript($this->code['skeleton']),
             ],
             'jsMode' => true,
-        ]);
+        ])->toArray()[0];
 
         if ( ! $rs['ok']) {
             throw new \RuntimeException(
@@ -84,9 +99,9 @@ class QueryProfiler
         }
 
         foreach ($rs['results'] as $i => $result) {
-            $rs['results'][$i] = $result['_id'] + $result['value'];
-            $rs['results'][$i]['ts']['min'] = new \DateTime('@' . $rs['results'][$i]['ts']['min']->sec);
-            $rs['results'][$i]['ts']['max'] = new \DateTime('@' . $rs['results'][$i]['ts']['max']->sec);
+            $rs['results'][$i] = $result['_id']->getArrayCopy() + $result['value']->getArrayCopy();
+            $rs['results'][$i]['ts']['min'] = $rs['results'][$i]['ts']['min']->toDateTime();
+            $rs['results'][$i]['ts']['max'] = $rs['results'][$i]['ts']['max']->toDateTime();
         }
 
         return $rs['results'];
