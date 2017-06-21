@@ -2,19 +2,19 @@
 
 namespace MongoQP\Silex\Provider;
 
-use Silex\Application;
-use Silex\ServiceProviderInterface;
 use MongoQP\QueryProfiler;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 
 class QueryProfilerServiceProvider implements ServiceProviderInterface
 {
-    public function register(Application $app)
+    public function register(Container $app)
     {
         if (!isset($app['mongo'])) {
-            $app['mongo'] = $app->share(function() { return new \MongoClient(); });
+            $app['mongo'] = function() { return new \MongoClient(); };
         }
 
-        $app['query.profiler'] = $app->share(function () use ($app) {
+        $app['query.profiler'] = function() use ($app) {
             $jsDir = __DIR__.'/../../../js';
             $code = [
                 'map'      => new \MongoCode(file_get_contents($jsDir.'/map.js')),
@@ -24,10 +24,6 @@ class QueryProfilerServiceProvider implements ServiceProviderInterface
             ];
 
             return new QueryProfiler($app['mongo'], $code);
-        });
-    }
-
-    public function boot(Application $app)
-    {
+        };
     }
 }
