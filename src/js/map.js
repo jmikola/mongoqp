@@ -36,6 +36,14 @@ function() {
     if (typeof this.command === "object") {
         var command = Object.keys(this.command)[0];
 
+        if (typeof command !== "string") {
+            return;
+        }
+
+        if (typeof this.command[command] !== "string") {
+            return;
+        }
+
         // Ignore commands targetting system collections
         if (this.command[command].substr(0, 7) === "system.") {
             return;
