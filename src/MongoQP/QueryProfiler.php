@@ -72,7 +72,7 @@ class QueryProfiler
             '$not' => new Regex('^' . preg_quote("$database.system.")),
             '$in' => [
                 "$database.\$cmd",
-                isset($collection) ? "$database.$collection" : new \MongoRegex('/^' . preg_quote("$database.") . '/'),
+                isset($collection) ? "$database.$collection" : new Regex('^' . preg_quote("$database.")),
             ],
         ]];
 
